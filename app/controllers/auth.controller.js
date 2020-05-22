@@ -26,6 +26,7 @@ exports.signin = (req, res) => {
                       return console.log(err);
                     } 
                     const user = data.recordset
+                    // console.log(user[0].Roles)
                     if(user.length === 0) {
                       return res.status(200).json({message: 'Incorrect Username'})
                     }
@@ -33,13 +34,14 @@ exports.signin = (req, res) => {
                       bcrypt.compare(user[0].Password, passClientEncode, function(err, result) {
                         if(result === true){
                           const payload = {
-                            username: "hihi",
+                            role: user[0].Role_ID,
+                            // username : user[0].UserName
                           };
                           var token = jwt.sign(payload, config.secret, {
                             expiresIn: config.tokenLife,
                           });
                           
-                          return res.status(200).json({message: 'pass', token: token})
+                          return res.status(200).json({message: 'pass', token: token, role: "ROLE_" + user[0].Role_ID, username: user[0].UserName })
                         } else if (result === false) {
                           return res.status(200).json({message: 'Incorrect Password'})
                         } 

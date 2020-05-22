@@ -1,6 +1,16 @@
 const sql = require("mssql");
 const jwt = require("jsonwebtoken")
+const express = require("express");
+const bodyParser = require("body-parser");
+const app = express();
+const sqlConfig = require("../config/db.config")
 const config = require("../config/auth.config")
+
+// parse application/json 
+app.use(bodyParser.json());
+// parse application/x-www-form-urlencoded 
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
@@ -20,43 +30,53 @@ verifyToken = (req, res, next) => {
                 message: "Unauthorized!"
             });
         }
-        // req.userId = decode.id;
+        console.log(decode.role)
+        req.role = decode.role;
+        req.username = decode.username
         next()
     })
 }
 
+
 isAdmin = (req, res, next) => {
-    var username = req.body.username;
-    var password = req.body.password;
-    try {
-        if(username && password) {
-            sql.connect(slqConfig, (err) => {
-                if(err) {
-                    console.log(err)
-                }
-                var request = new sql.Request()
-                request.query(
-                    `SELECT * FROM [user].[dbo].[UserLogin] WHERE UserName = '${username}'`,
-                    (err, data) => {
-                        const user = data.recordset
-                        if(user[0].Roles === "admin"){
-                            next()
-                            return res.json({mess: "admin"})
-                        } else {
-                            return res.json({mess: "Require Admin Role!"})
-                        }
-                    }  
-                )
-            })
-        }
-    } catch (err) {
-        res.status(500).json({mess: "error connecting to db",error})
-    }
+    if(req.role === 1) {
+        next();
+        return;
+    } 
+    
+    res.status(403).send({mess: "Require Admin Role!"})
+    
+}
+
+isMod = (req, res, next) => {
+    if(req.role === 2) {
+        next();
+        return;
+    } 
+    
+    res.status(403).send({mess: "Require Moderator Role!"})
+    
+}
+
+isAdminOrMod = (req, res, next) => {
+    if(req.role === 1) {
+        next();
+        return;
+    } 
+    if(req.role === 2) {
+        next();
+        return;
+    } 
+    
+    res.status(403).send({mess: "Require Admin or Moderator Role!"})
+    
 }
 
 const authJwt = {
     verifyToken: verifyToken,
     isAdmin: isAdmin,
+    isMod: isMod,
+    isAdminOrMod: isAdminOrMod
 }
 
 module.exports = authJwt

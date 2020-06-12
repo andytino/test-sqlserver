@@ -23,14 +23,14 @@ verifyToken = (req, res, next) => {
 
     //Verify user
     jwt.verify(token, config.secret, (err, decode) => {
-        console.log(token)
-        console.log(config.secret)
+        // console.log(token)
+        // console.log(config.secret)
         if(err){
             return res.status(401).send({
                 message: "Unauthorized!"
             });
         }
-        console.log(decode.role)
+        // console.log(decode.role)
         req.role = decode.role;
         req.username = decode.username
         next()

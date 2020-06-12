@@ -18,7 +18,7 @@ exports.signin = (req, res) => {
                   console.log(err);
                 }
                 var request = new sql.Request();
-                console.log(passClientEncode)
+                // console.log(passClientEncode)
                 request.query(
                   `SELECT * FROM [user].[dbo].[UserLogin] WHERE UserName = '${username}'`,
                   (err, data) => {

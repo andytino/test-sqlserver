@@ -6,25 +6,24 @@ const app = express();
 
 const port = process.env.PORT || 8080;
 
-
-
-// parse application/json 
-app.use(bodyParser.json());
-// parse application/x-www-form-urlencoded 
-app.use(bodyParser.urlencoded({ extended: true }));
-
 // var corsOptions = {
-//   origin: "http://localhost:8080"
+//   origin: "*",
 // };
+
 app.use(cors());
+
+// parse application/json
+app.use(bodyParser.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome" });
 });
 
-require('./app/routes/auth.routes.js')(app)
-require('./app/routes/user.routes')(app)
+require("./app/routes/auth.routes.js")(app);
+require("./app/routes/user.routes")(app);
 
 app.listen(port, () => {
   console.log(`server listening on port ${port}!`);

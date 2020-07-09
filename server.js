@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
+// var app = (module.exports = express.createServer());
 
 const port = process.env.PORT || 8080;
 
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/auth.routes.js")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/mailroute")(app);
 
 app.listen(port, () => {
   console.log(`server listening on port ${port}!`);

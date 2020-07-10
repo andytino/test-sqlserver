@@ -1,4 +1,4 @@
 module.exports = {
-    secret: "serect",
-    tokenLife: 10,
-}
+  secret: "serect",
+  tokenLife: 1,
+};
